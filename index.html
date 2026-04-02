@@ -2,14 +2,14 @@
 <html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مركز قيادة الرائد - Komondose</title>
 <style>
-    body { background:#000; color:#0f0; font-family:monospace; padding:15px; margin:0; }
-    .card { border:2px solid #0f0; background:#050505; padding:20px; border-radius:15px; margin-bottom:15px; box-shadow:0 0 15px #030; }
+    body { background:#000; color:#0f0; font-family:monospace; padding:5px; margin:0; }
+    .card { border:2px solid #0f0; background:#050505; padding:10px; border-radius:15px; margin-bottom:5px; box-shadow:0 0 15px #030; }
     textarea, input { width:100%; background:#000; border:1px solid #0f0; color:#fff; padding:12px; margin:8px 0; border-radius:8px; box-sizing:border-box; font-size:1.1rem; }
-    .btn { width:100%; padding:18px; border:none; font-weight:bold; cursor:pointer; border-radius:10px; margin:5px 0; font-size:1.2rem; transition:0.3s; }
+    .btn { width:100%; padding:12px; border:none; font-weight:bold; cursor:pointer; border-radius:10px; margin:5px 0; font-size:1rem; transition:0.3s; }
     .btn-blue { background:#1f6feb; color:#fff; }
     .btn-green { background:#238636; color:#fff; box-shadow:0 0 10px #0f0; }
     .mode-box { display:flex; gap:10px; margin:10px 0; }
-    .m-btn { flex:1; background:none; border:2px solid #0f0; color:#0f0; padding:15px; border-radius:10px; }
+    .m-btn { flex:1; background:none; border:2px solid #0f0; color:#0f0; padding:5px; border-radius:10px; }
     .active { background:#0f0 !important; color:#000 !important; }
 </style></head>
 <body>
@@ -26,9 +26,11 @@
             <button id="m_forced" class="m-btn active" onclick="setM('forced')">🔴 مبرمج</button>
         </div>
         <button class="btn btn-green" onclick="save()">✅ حفظ ورفع للماتريكس</button>
+<button class="btn" style="background:#da3633; color:#fff;" onclick="clearAll()">🗑️ المسح الكلي للأسماء</button>
     </div>
     <button class="btn" style="background:#0f0; color:#000; font-size:1.5rem;" onclick="location.href='public.html'">🚀 فتح الماتريكس</button>
 <script>
+window.onload = function() { const d = JSON.parse(localStorage.getItem("komondose_v22")); if(d) { document.getElementById("list").value = d.names.join(", "); document.getElementById("target").value = d.target; setM(d.mode); } };
 let m = 'forced';
 function inj(){
     const t=document.getElementById('raw').value;
@@ -42,4 +44,5 @@ function save(){
     localStorage.setItem('komondose_v22', JSON.stringify(d));
     alert("تم تأمين البيانات بنجاح يا قائد!");
 }
+function clearAll() { if(confirm("هل تريد مسح جميع الأسماء والبيانات؟")) { localStorage.removeItem("komondose_v22"); document.getElementById("raw").value=""; document.getElementById("list").value=""; document.getElementById("target").value=""; alert("تم تصفير الذاكرة بنجاح."); } }
 </script></body></html>
