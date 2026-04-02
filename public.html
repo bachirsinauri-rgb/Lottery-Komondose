@@ -3,11 +3,11 @@
 <style>
     body { margin:0; background:#000; overflow:hidden; font-family:monospace; }
     canvas { position:fixed; top:0; left:0; opacity:0.3; }
-    .ui { position:relative; z-index:10; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; }
-    .scanner { width:95%; height:100px; border:4px solid #0f0; background:rgba(0,30,0,0.9); overflow:hidden; position:relative; border-radius:20px; box-shadow:0 0 50px #0f0; }
-    #scroll { display:flex; white-space:nowrap; position:absolute; font-size:4rem; color:#fff; font-weight:bold; height:100%; align-items:center; }
+    .ui { position:relative; z-index:10; height:100vh; display:flex; flex-direction:column; justify-content:flex-start; align-items:center; }
+    .scanner { width:95%; height:250px; border:4px solid #0f0; background:rgba(0,30,0,0.9); overflow:hidden; position:relative; border-radius:20px; box-shadow:0 0 50px #0f0; }
+    #scroll { display:flex; white-space:normal; position:absolute; font-size:4rem; color:#fff; font-weight:bold; height:100%; align-items:center; }
     .stop-btn { width:85%; padding:35px; background:linear-gradient(to bottom, #ff0000, #880000); color:#fff; font-size:2.8rem; border-radius:30px; margin-top:40px; cursor:pointer; font-weight:bold; border:4px solid #fff; box-shadow:0 0 40px #f00; }
-    #overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; flex-direction:column; align-items:center; justify-content:center; z-index:100; }
+    #overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; flex-direction:column; align-items:center; justify-content:flex-start; z-index:100; }
 </style></head>
 <body>
     <canvas id="c"></canvas>
@@ -18,10 +18,10 @@
         <button onclick="location.reload()" style="margin-top:40px; padding:15px 40px; background:#0f0; color:#000; border:none; border-radius:10px; font-weight:bold;">إعادة سحب 🌀</button>
     </div></div>
 <script>
-let db=JSON.parse(localStorage.getItem('komondose_v22'))||{names:["تأكد من الحفظ"],target:"",mode:"forced"}, spin=true, x=0;
+let y=-1000, db=JSON.parse(localStorage.getItem('komondose_v22'))||{names:["تأكد من الحفظ"],target:"",mode:"forced"}, spin=true, x=0;
 const sc=document.getElementById('scroll');
 for(let i=0; i<80; i++){ db.names.forEach(n=>{if(n.trim()){const s=document.createElement('span'); s.style.padding='0 90px'; s.innerText=n; sc.appendChild(s);}});}
-function move(){ if(spin){ x-=12; sc.style.transform=`translateX(${x}px)`; if(Math.abs(x)>sc.scrollWidth/2)x=0; requestAnimationFrame(move);}} move();
+function move(){ if(spin){ y+=8; sc.style.transform=`translateY(${y}px)`; if(Math.abs(x)>sc.scrollWidth/2)x=0; requestAnimationFrame(move);}} move();
 function stop(){ 
     spin=false; 
     const res=(db.mode=='forced' && db.target)?db.target : db.names[Math.floor(Math.random()*db.names.length)];
@@ -30,5 +30,5 @@ function stop(){
 }
 const canv=document.getElementById('c'); const ctx=canv.getContext('2d'); canv.width=window.innerWidth; canv.height=window.innerHeight;
 let d=Array(Math.floor(canv.width/20)).fill(1);
-function draw(){ ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.fillRect(0,0,canv.width,canv.height); ctx.fillStyle='#39ff14'; d.forEach((y,i)=>{ctx.fillText("10",i*20,y*20);if(y*20>canv.height&&Math.random()>0.975)d[i]=0;d[i]++;});} setInterval(draw,50);
+function draw(){ ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.fillRect(0,0,canv.width,canv.height); ctx.fillStyle='#00ff41'; d.forEach((y,i)=>{ctx.font='20px monospace'; ctx.fillText(Math.floor(Math.random()*2),,i*20,y*20);if(y*20>canv.height&&Math.random()>0.975)d[i]=0;d[i]++;});} setInterval(draw,50);
 </script></body></html>
