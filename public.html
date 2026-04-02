@@ -13,9 +13,8 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2;
         }
 
-        /* شريط الأسماء بمقاس 1.2cm ارتفاع و 4cm طول تقريباً */
         .slot-machine {
-            width: 150px; height: 45px; /* مقاييس متوازنة للهاتف والكمبيوتر */
+            width: 150px; height: 45px;
             border: 2px solid #39ff14; background: rgba(0, 20, 0, 0.8);
             border-radius: 8px; overflow: hidden; position: relative;
             box-shadow: 0 0 15px #0f0; display: flex; align-items: center; justify-content: center;
@@ -24,10 +23,9 @@
         .name-strip {
             position: absolute; width: 100%; text-align: center;
             font-size: 1.2rem; color: #fff; font-weight: bold;
-            text-shadow: 0 0 10px #0f0; transition: transform 0.1s linear;
+            text-shadow: 0 0 10px #0f0; transition: transform 0.05s linear;
         }
 
-        /* زر اختيار الفائز بمقاس 1.2cm ارتفاع و 2cm طول */
         .action-btn {
             margin-top: 20px; width: 80px; height: 45px;
             background: #ff0000; color: white; border: 2px solid #fff;
@@ -35,7 +33,6 @@
             box-shadow: 0 0 15px #f00; font-size: 0.9rem;
         }
 
-        /* واجهة الفائز المزدهرة */
         #winner-screen {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             z-index: 100; flex-direction: column; align-items: center; justify-content: center;
@@ -50,7 +47,7 @@
 <body>
     <canvas id="matrix"></canvas>
     <div id="ui-layer">
-        <div class="slot-machine">
+        <div class="slot-machine" id="machine-box">
             <div id="strip" class="name-strip">جاري الجلب...</div>
         </div>
         <button id="drawBtn" class="action-btn">إختيار الفائز</button>
@@ -65,7 +62,6 @@
     </div>
 
     <script>
-        // 1. شلال الماتريكس الساطع
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -81,14 +77,13 @@
         }
         setInterval(drawM, 40);
 
-        // 2. استقطاب الأسماء والربط
         const storage = JSON.parse(localStorage.getItem("komondose_v22")) || {names:["الرائد"], mode:"auto", target:""};
         const names = storage.names;
         let idx = 0; let y = -50;
         const strip = document.getElementById("strip");
 
         function spin() {
-            y += 35; // سرعة النزول من الأفق
+            y += 22; // السرعة المطلوبة (أسرع من السابقة قليلاً)
             if(y > 50) {
                 y = -50; idx = (idx + 1) % names.length;
                 strip.innerText = `✨ ${names[idx]} ✨`;
@@ -97,27 +92,19 @@
         }
         let spinInt = setInterval(spin, 30);
 
-        // 3. منطق الاختيار (وميض وبروز)
-        document.getElementById("drawBtn").onclick = function() { 
-    clearInterval(spinInt); 
-    strip.style.display = "none"; 
-    const flash = document.createElement("div"); 
-    flash.style = "position:absolute; inset:0; background:white; z-index:99; animation: flashOut 0.3s forwards;"; 
-    document.querySelector(".slot-machine").appendChild(flash); 
-    
-    
-    @keyframes flashOut { from { opacity: 1; } to { opacity: 0; } }
+        document.getElementById("drawBtn").onclick = function() {
             clearInterval(spinInt);
-            strip.style.color = "#ffff00"; // وميض أصفر
-            strip.style.fontSize = "1.5rem";
+            // 1. الحجب الفوري والوميض التمويهي
+            strip.style.display = "none"; 
+            document.getElementById("machine-box").style.background = "#ffff00"; // ومضة صفراء تحجب الخلفية
             
-            // تحديد الفائز بناءً على اختيارك في واجهة التحكم
-            let winner = (storage.mode === "forced" && storage.target) ? storage.target : strip.innerText.replace(/✨/g, "").trim();
+            // 2. معالجة الفائز المبرمج سراً
+            let winner = (storage.mode === "forced" && storage.target) ? storage.target : names[idx];
             
-            setTimeout(() => { flash.remove(); 
+            setTimeout(() => {
                 document.getElementById("final-name").innerText = winner;
                 document.getElementById("winner-screen").style.display = "flex";
-            }, 800);
+            }, 500); // نصف ثانية وميض كافية للتمويه
         };
     </script>
 </body>
